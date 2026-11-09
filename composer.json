@@ -1,0 +1,28 @@
+{
+    "name": "priyank/module-cron-scheduler-monitor",
+    "description": "Magento 2 Cron Scheduler & Health Monitor CLI tool to list cron schedules, monitor execution status, detect stalled jobs, and trigger specific cron jobs on-demand.",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Priyank Jivani",
+            "email": "priyankjivani48@gmail.com",
+            "homepage": "https://www.upwork.com/freelancers/priyankjivani",
+            "role": "Senior Magento 2 Backend Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.1.0",
+        "magento/framework": ">=103.0.0",
+        "magento/module-cron": ">=100.4.0"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Priyank\\CronMonitor\\": ""
+        }
+    }
+}
