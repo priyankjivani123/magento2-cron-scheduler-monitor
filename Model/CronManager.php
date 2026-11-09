@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Priyank\CronMonitor\Model;
+namespace PriyankJivani\CronSchedulerMonitor\Model;
 
 use Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory as ScheduleCollectionFactory;
 use Magento\Cron\Model\ConfigInterface as CronConfigInterface;
@@ -141,7 +141,7 @@ class CronManager
 
         if ($schedule && $schedule->getStatus() === Schedule::STATUS_RUNNING) {
             $schedule->setStatus(Schedule::STATUS_ERROR);
-            $schedule->setMessages('Manually reset by Priyank_CronMonitor tool due to hanging process.');
+            $schedule->setMessages('Manually reset by PriyankJivani_CronSchedulerMonitor tool due to hanging process.');
             $schedule->save();
             return true;
         }

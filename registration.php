@@ -5,6 +5,6 @@ use Magento\Framework\Component\ComponentRegistrar;
 
 ComponentRegistrar::register(
     ComponentRegistrar::MODULE,
-    'Priyank_CronMonitor',
+    'PriyankJivani_CronSchedulerMonitor',
     __DIR__
 );

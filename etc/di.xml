@@ -4,9 +4,9 @@
     <type name="Magento\Framework\Console\CommandListInterface">
         <arguments>
             <argument name="commands" xsi:type="array">
-                <item name="priyank_cron_status" xsi:type="object">Priyank\CronMonitor\Console\Command\CronStatusCommand</item>
-                <item name="priyank_cron_stalled" xsi:type="object">Priyank\CronMonitor\Console\Command\CronStalledCommand</item>
-                <item name="priyank_cron_run_job" xsi:type="object">Priyank\CronMonitor\Console\Command\RunSpecificJobCommand</item>
+                <item name="priyank_cron_status" xsi:type="object">PriyankJivani\CronSchedulerMonitor\Console\Command\CronStatusCommand</item>
+                <item name="priyank_cron_stalled" xsi:type="object">PriyankJivani\CronSchedulerMonitor\Console\Command\CronStalledCommand</item>
+                <item name="priyank_cron_run_job" xsi:type="object">PriyankJivani\CronSchedulerMonitor\Console\Command\RunSpecificJobCommand</item>
             </argument>
         </arguments>
     </type>

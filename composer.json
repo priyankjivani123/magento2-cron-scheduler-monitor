@@ -1,5 +1,5 @@
 {
-    "name": "priyank/module-cron-scheduler-monitor",
+    "name": "priyankjivani/module-cron-scheduler-monitor",
     "description": "Magento 2 Cron Scheduler & Health Monitor CLI tool to list cron schedules, monitor execution status, detect stalled jobs, and trigger specific cron jobs on-demand.",
     "type": "magento2-module",
     "version": "1.0.0",
@@ -22,7 +22,7 @@
             "registration.php"
         ],
         "psr-4": {
-            "Priyank\\CronMonitor\\": ""
+            "PriyankJivani\\CronSchedulerMonitor\\": ""
         }
     }
 }

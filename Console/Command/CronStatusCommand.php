@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Priyank\CronMonitor\Console\Command;
+namespace PriyankJivani\CronSchedulerMonitor\Console\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\Table;
-use Priyank\CronMonitor\Model\CronManager;
+use PriyankJivani\CronSchedulerMonitor\Model\CronManager;
 
 class CronStatusCommand extends Command
 {

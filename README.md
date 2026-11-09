@@ -1,159 +1,119 @@
-# Magento 2 Cron Scheduler & Health Monitor CLI
+# Magento 2 Cron Scheduler Monitor & Diagnostics CLI
 
 [![Magento 2.4.x](https://img.shields.io/badge/Magento-2.4.x-orange.svg?logo=magento)](https://business.adobe.com/products/magento/magento-commerce.html)
-[![PHP 8.1 | 8.2 | 8.3](https://img.shields.io/badge/PHP-8.1%20%7C%208.2%20%7C%208.3-777BB4.svg?logo=php)](https://www.php.net/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Upwork Top Rated](https://img.shields.io/badge/Upwork-Available%20for%20Hire-green.svg?logo=upwork)](https://www.upwork.com/freelancers/priyankjivani)
+[![PHP 8.1 - 8.4 Compatible](https://img.shields.io/badge/PHP-8.1%20%7C%208.2%20%7C%208.3%20%7C%208.4-777BB4.svg?logo=php)](https://www.php.net/)
+[![Composer Package](https://img.shields.io/badge/Composer-priyankjivani%2Fmodule--cron--scheduler--monitor-blue.svg?logo=composer)](https://packagist.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Upwork](https://img.shields.io/badge/Upwork-Available%20for%20Hire-14a800.svg?logo=upwork)](https://www.upwork.com/freelancers/priyankjivani)
 
-A powerful developer diagnostics and operational tool for **Magento 2 & Adobe Commerce**. Inspect cron schedules in real-time, diagnose performance bottlenecks, detect and unblock hung/stalled processes, and trigger isolated cron jobs on-demand without executing the entire cron queue.
+Essential developer diagnostics and operational tool for **Magento 2 & Adobe Commerce**. Inspect live cron schedule states, uncover stalled or deadlocked workers, analyze execution durations, and trigger specific cron jobs on-demand.
 
 Developed and maintained by **[Priyank Jivani](https://github.com/priyankjivani123)** (Senior Magento 2 Backend Developer).
 
 ---
 
-## 🚀 Why Use This Tool?
+## 🚀 Key Features
 
-In production Magento 2 environments, standard cron jobs frequently encounter:
-* **Silent Failures & Long Queues**: Jobs failing without immediate notification.
-* **Hanging / Stalled Tasks**: A single hung cron job blocks other vital jobs in the same group.
-* **Debugging Friction**: Running `bin/magento cron:run` triggers all scheduled jobs simultaneously, making it impossible to step-debug or profile a single specific worker.
-
-This module provides 3 dedicated, lightweight CLI commands to solve these issues.
+* **Live Status Dashboard in Console:** Formatted console table displaying Job Code, Status (`running`, `pending`, `success`, `error`, `missed`), Schedule Time, Execution Time, and Output Messages.
+* **Deadlock & Stalled Job Detector:** Automatically locates orphaned jobs that have been stuck in `running` state beyond a configurable threshold and offers safe reset to prevent queue lockup.
+* **On-Demand Job Execution:** Run any isolated cron job immediately (`bin/magento cron:job:run <job_code>`) without triggering the entire Magento cron cycle.
+* **Lightweight & Non-Intrusive:** Zero frontend overhead, zero additional database tables — queries native `cron_schedule` collection.
 
 ---
 
-## 💻 CLI Commands & Usage
+## 🌐 Magento & PHP Compatibility Matrix
 
-### 1. View Live Cron Schedule Status
+| Magento / Adobe Commerce Release | Supported PHP Versions | Compatibility Status | Notes |
+| :--- | :--- | :---: | :--- |
+| **Magento 2.4.4 - 2.4.5-p1** | PHP 8.1 | ✅ Supported | Tested on 2.4.4-p9 & 2.4.5-p1 |
+| **Magento 2.4.5-p2 - 2.4.6-pX** | PHP 8.1, PHP 8.2 | ✅ Supported | Tested on 2.4.6-p8 |
+| **Magento 2.4.7 - 2.4.7-pX** | PHP 8.2, PHP 8.3 | ✅ Supported | Officially verified on 2.4.7-p3 |
+| **Magento 2.4.8 (Roadmap)** | PHP 8.3, PHP 8.4 | 🚀 Forward-Compatible | Strict types, zero implicit nullable deprecations |
+| **PHP 8.5 (Future Release)** | *N/A (Pending Adobe Core)* | ⏳ Preview / Audited | Extension syntax passes PHP 8.5 compilation; awaiting Adobe Commerce core framework update |
 
-Display a formatted console table showing job execution times, durations, and output messages:
 
+---
+
+## 📦 Composer Installation Instructions
+
+### Step 1: Register GitHub VCS Repository
+```bash
+composer config repositories.priyankjivani-cron-scheduler-monitor vcs https://github.com/priyankjivani123/magento2-cron-scheduler-monitor.git
+```
+
+### Step 2: Require the Package
+```bash
+composer require priyankjivani/module-cron-scheduler-monitor:^1.0.0
+```
+
+### Step 3: Enable the Module
+```bash
+bin/magento module:enable PriyankJivani_CronSchedulerMonitor
+bin/magento setup:upgrade
+bin/magento cache:flush
+```
+
+---
+
+## 💻 CLI Commands
+
+### 1. View Cron Status Table
 ```bash
 bin/magento cron:monitor:status
 ```
-
-#### Filtering Options:
+Filter by status or specific job:
 ```bash
-# Filter by status (pending, running, success, error, missed)
 bin/magento cron:monitor:status --status=error
+bin/magento cron:monitor:status --job=catalog_product_out_of_stock
+```
 
-# Filter by partial job code (e.g. index, catalog, sales)
-bin/magento cron:monitor:status --job=index
+### 2. Detect and Reset Stalled Jobs
+```bash
+bin/magento cron:monitor:stalled --reset
+```
 
-# Limit output rows
-bin/magento cron:monitor:status --limit=50
+### 3. Run Specific Cron Job On-Demand
+```bash
+bin/magento cron:job:run newsletter_send_all
 ```
 
 ---
 
-### 2. Detect & Reset Stalled Cron Jobs
-
-Scan the `cron_schedule` table for processes that have been stuck in `running` status longer than a given threshold:
+## 🧪 Automated Testing
 
 ```bash
-# Check for jobs running longer than 45 minutes
-bin/magento cron:monitor:stalled
-
-# Customize threshold in minutes (e.g., 30 min)
-bin/magento cron:monitor:stalled --threshold=30
-
-# Automatically reset stalled jobs to unblock Magento cron runners
-bin/magento cron:monitor:stalled --threshold=30 --reset
+vendor/bin/phpunit -c phpunit.xml.dist
 ```
 
 ---
 
-### 3. Run a Specific Cron Job On-Demand
+## 📋 Changelog
 
-Execute a single job directly via CLI without waiting for the next cron cycle or triggering other jobs:
-
-```bash
-bin/magento cron:job:run <job_code>
-```
-
-**Example:**
-```bash
-bin/magento cron:job:run catalog_index_refresh_price
-```
-
----
-
-## 🛠 Technical Requirements
-
-| Stack Component | Requirement |
-| :--- | :--- |
-| **Magento / Adobe Commerce** | 2.4.4, 2.4.5, 2.4.6, 2.4.7+ |
-| **PHP** | 8.1, 8.2, 8.3 |
-| **Composer** | 2.x |
-
----
-
-## 📦 Installation Instructions
-
-### Option 1: Composer Installation (Recommended)
-
-```bash
-composer require priyank/module-cron-scheduler-monitor
-bin/magento module:enable Priyank_CronMonitor
-bin/magento setup:upgrade
-bin/magento setup:di:compile
-bin/magento cache:flush
-```
-
-### Option 2: Manual Installation
-
-1. Create directory `app/code/Priyank/CronMonitor`.
-2. Extract the repository files into `app/code/Priyank/CronMonitor`.
-3. Enable and compile:
-```bash
-bin/magento module:enable Priyank_CronMonitor
-bin/magento setup:upgrade
-bin/magento setup:di:compile
-bin/magento cache:flush
-```
-
----
-
-## 🏗 Architecture & Code Structure
-
-```
-├── Console/
-│   └── Command/
-│       ├── CronStatusCommand.php      # bin/magento cron:monitor:status
-│       ├── CronStalledCommand.php     # bin/magento cron:monitor:stalled
-│       └── RunSpecificJobCommand.php  # bin/magento cron:job:run <job_code>
-├── Model/
-│   └── CronManager.php                # Business logic, schedule query, and execution wrapper
-├── etc/
-│   ├── di.xml                         # Console CommandList registration
-│   └── module.xml
-├── composer.json
-├── registration.php
-└── README.md
-```
+See [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
 ## 📄 License
 
-Open-source module released under the [MIT License](LICENSE).
+MIT License. See [LICENSE](LICENSE).
 
 ---
 
-## 💼 Developing a Magento 2 project?
+## Developing a Magento 2 project?
 
-I help businesses build, customize, optimize, and maintain **Magento 2 / Adobe Commerce** stores.
+I help businesses build, customize, optimize and maintain Magento 2 / Adobe Commerce stores.
 
 **Available for:**
-* Magento 2 Custom Development & Architecture
-* Custom Magento Extensions & Modules
-* Bug Fixes, Audits, and Troubleshooting
-* Performance Optimization & Core Web Vitals
-* Hyvä Theme Development & Customization
-* Headless GraphQL & REST API Integrations
-* Ongoing Magento Store Maintenance
+- Magento 2 Custom Development
+- Magento Extensions
+- Bug Fixes and Troubleshooting
+- Performance Optimization
+- Hyvä Theme Development
+- API Integrations
+- Ongoing Magento Maintenance
 
-👉 **Hire me on Upwork:** [Priyank Jivani on Upwork](https://www.upwork.com/freelancers/priyankjivani)  
-👉 **GitHub Profile:** [priyankjivani123](https://github.com/priyankjivani123)
+**Hire me on Upwork:** [Priyank Jivani Upwork Profile](https://www.upwork.com/freelancers/priyankjivani)  
+**GitHub:** [github.com/priyankjivani123](https://github.com/priyankjivani123)
 
-Contact me for freelance projects and long-term enterprise collaborations.
+Contact me for freelance projects and long-term collaborations.
+
